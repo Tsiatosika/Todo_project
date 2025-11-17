@@ -1,3 +1,4 @@
+// frontend/src/components/TaskList.jsx
 import React from 'react'
 import TaskItem from './TaskItem'
 
@@ -10,21 +11,23 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleStatus }) {
           Aucune tâche pour le moment
         </h3>
         <p className="text-gray-500">
-          Commencez par ajouter votre première tâche ci-dessus !
+          Commencez par ajouter votre première tâche !
         </p>
       </div>
     )
   }
 
-  // Trier les tâches : non terminées d'abord
+  // Trier : non terminées d'abord, puis par date
   const sortedTasks = [...tasks].sort((a, b) => {
-    if (a.status === b.status) return 0
-    return a.status === 'non terminée' ? -1 : 1
+    if (a.status !== b.status) {
+      return a.status === 'non terminée' ? -1 : 1
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt)
   })
 
   return (
     <div className="p-6">
-      <div className="mb-4">
+      <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-800">
           Mes Tâches ({tasks.length})
         </h3>

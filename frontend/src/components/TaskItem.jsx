@@ -1,9 +1,10 @@
+// frontend/src/components/TaskItem.jsx
 import React from 'react'
 
 export default function TaskItem({ task, onEdit, onDelete, onToggleStatus }) {
   const statusColors = {
-    'terminée': 'bg-green-50 border-green-200',
-    'non terminée': 'bg-white border-gray-200'
+    'terminée': 'bg-green-50 border-green-200 text-green-800',
+    'non terminée': 'bg-white border-gray-200 text-blue-800'
   }
 
   const statusIcons = {
@@ -12,10 +13,10 @@ export default function TaskItem({ task, onEdit, onDelete, onToggleStatus }) {
   }
 
   return (
-    <div className={`p-4 border-l-4 rounded-lg shadow-sm transition-all hover:shadow-md ${
+    <div className={`p-4 border rounded-lg shadow-sm transition-all hover:shadow-md ${
       task.status === 'terminée' 
-        ? 'border-green-400 bg-green-50' 
-        : 'border-blue-400 bg-white'
+        ? 'border-green-300 bg-green-50' 
+        : 'border-gray-300 bg-white'
     }`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-1">
@@ -24,7 +25,7 @@ export default function TaskItem({ task, onEdit, onDelete, onToggleStatus }) {
             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
               task.status === 'terminée'
                 ? 'bg-green-500 border-green-500 text-white'
-                : 'border-gray-300 hover:border-green-500'
+                : 'border-gray-300 hover:border-green-500 bg-white'
             }`}
           >
             {task.status === 'terminée' && '✓'}
