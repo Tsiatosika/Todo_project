@@ -10,10 +10,22 @@ export default function App() {
   const [editingTask, setEditingTask] = useState(null)
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
   const [notification, setNotification] = useState({ show: false, message: '', type: '' })
+  
+  // État pour le mode sombre
+  const [darkMode, setDarkMode] = useState(() => {
+    // Vérifier la préférence système ou le localStorage
+    const saved = localStorage.getItem('darkMode')
+    return saved ? JSON.parse(saved) : window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
+
+  // Sauvegarder la préférence dans le localStorage
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode))
+  }, [darkMode])
 
   function showNotification(message, type = 'success') {
     setNotification({ show: true, message, type })
-    setTimeout(() => setNotification({ show: false, message: '', type: '' }, 3000))
+    setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000)
   }
 
   async function loadTasks() {
@@ -85,48 +97,103 @@ export default function App() {
     setEditingTask(null)
   }
 
+  function toggleDarkMode() {
+    setDarkMode(!darkMode)
+  }
+
   const pendingTasks = tasks.filter(t => t.status === 'non terminée').length
   const completedTasks = tasks.filter(t => t.status === 'terminée').length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800 text-white' 
+        : 'bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-900'
+    }`}>
+      <div className="max-w-4xl mx-auto py-8 px-4">
         
+        {/* Header avec bouton mode sombre */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">
+              📝 Todo App
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Gérez vos tâches efficacement
+            </p>
+          </div>
+          
+          {/* Bouton toggle mode sombre */}
+          <button
+            onClick={toggleDarkMode}
+            className={`p-3 rounded-full transition-all duration-300 ${
+              darkMode 
+                ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-300' 
+                : 'bg-gray-800 text-white hover:bg-gray-700'
+            }`}
+            title={darkMode ? 'Passer en mode clair' : 'Passer en mode sombre'}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
+
         {/* Notification */}
         {notification.show && (
           <div className={`mb-6 p-4 rounded-lg border ${
             notification.type === 'error' 
-              ? 'bg-red-100 border-red-400 text-red-700' 
-              : 'bg-green-100 border-green-400 text-green-700'
+              ? 'bg-red-100 border-red-400 text-red-700 dark:bg-red-900 dark:border-red-700 dark:text-red-200' 
+              : 'bg-green-100 border-green-400 text-green-700 dark:bg-green-900 dark:border-green-700 dark:text-green-200'
           }`}>
             {notification.message}
           </div>
         )}
 
-        {/* Header avec Statistiques */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            📝 Todo App
-          </h1>
-          <p className="text-gray-600 mb-6">Gérez vos tâches efficacement</p>
-          
-          {/* Cartes de statistiques */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <div className="text-2xl font-bold text-gray-800">{tasks.length}</div>
-              <div className="text-gray-600">Total tâches</div>
+        {/* Cartes de statistiques */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className={`rounded-xl shadow-sm p-6 border transition-colors ${
+            darkMode 
+              ? 'bg-gray-800 border-gray-700' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className={`text-2xl font-bold ${
+              darkMode ? 'text-white' : 'text-gray-800'
+            }`}>
+              {tasks.length}
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-blue-200">
-              <div className="text-2xl font-bold text-blue-600">{pendingTasks}</div>
-              <div className="text-gray-600">En cours</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-green-200">
-              <div className="text-2xl font-bold text-green-600">{completedTasks}</div>
-              <div className="text-gray-600">Terminées</div>
+            <div className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Total tâches
             </div>
           </div>
+          
+          <div className={`rounded-xl shadow-sm p-6 border transition-colors ${
+            darkMode 
+              ? 'bg-blue-900 border-blue-700' 
+              : 'bg-white border-blue-200'
+          }`}>
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {pendingTasks}
+            </div>
+            <div className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+              En cours
+            </div>
+          </div>
+          
+          <div className={`rounded-xl shadow-sm p-6 border transition-colors ${
+            darkMode 
+              ? 'bg-green-900 border-green-700' 
+              : 'bg-white border-green-200'
+          }`}>
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {completedTasks}
+            </div>
+            <div className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Terminées
+            </div>
+          </div>
+        </div>
 
-          {/* Bouton Ajouter */}
+        {/* Bouton Ajouter */}
+        <div className="text-center mb-8">
           <button
             onClick={openCreateModal}
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2 mx-auto"
@@ -137,17 +204,22 @@ export default function App() {
         </div>
 
         {/* Liste des tâches */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className={`rounded-xl shadow-lg overflow-hidden transition-colors ${
+          darkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="ml-2 text-gray-600">Chargement...</span>
+              <span className={`ml-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Chargement...
+              </span>
             </div>
           ) : (
             <TaskList
               tasks={tasks}
               onEdit={openEditModal}
               onDelete={handleDelete}
+              darkMode={darkMode}
               onToggleStatus={async (task) => {
                 await handleUpdate(task._id, {
                   ...task,
@@ -161,12 +233,15 @@ export default function App() {
         {/* Modal pour le formulaire */}
         {isFormModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className={`rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transition-colors ${
+              darkMode ? 'bg-gray-800' : 'bg-white'
+            }`}>
               <TaskForm
                 onCreate={handleCreate}
                 onUpdate={handleUpdate}
                 editingTask={editingTask}
                 cancelEdit={closeModal}
+                darkMode={darkMode}
               />
             </div>
           </div>

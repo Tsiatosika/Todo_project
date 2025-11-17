@@ -1,7 +1,7 @@
 // frontend/src/components/TaskForm.jsx
 import React, { useEffect, useState } from 'react'
 
-export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }) {
+export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit, darkMode }) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState('non terminée')
@@ -54,13 +54,17 @@ export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }
     <div className="p-6">
       {/* En-tête de la modale */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">
+        <h2 className={`text-2xl font-bold ${
+          darkMode ? 'text-white' : 'text-gray-800'
+        }`}>
           {editingTask ? '✏️ Modifier la tâche' : '➕ Nouvelle tâche'}
         </h2>
         <button
           type="button"
           onClick={cancelEdit}
-          className="text-gray-500 hover:text-gray-700 transition-colors text-2xl"
+          className={`text-2xl transition-colors ${
+            darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'
+          }`}
         >
           ✕
         </button>
@@ -69,7 +73,9 @@ export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${
+              darkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               Nom de la tâche *
             </label>
             <input
@@ -77,7 +83,11 @@ export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }
               value={name}
               onChange={e => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                darkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+              }`}
               placeholder="Que souhaitez-vous accomplir ?"
               disabled={isSubmitting}
               autoFocus
@@ -85,27 +95,39 @@ export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${
+              darkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               Description
             </label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows="3"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                darkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+              }`}
               placeholder="Détails supplémentaires (optionnel)"
               disabled={isSubmitting}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${
+              darkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               Statut
             </label>
             <select
               value={status}
               onChange={e => setStatus(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                darkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
               disabled={isSubmitting}
             >
               <option value="non terminée">🟡 En cours</option>
@@ -131,7 +153,11 @@ export default function TaskForm({ onCreate, editingTask, onUpdate, cancelEdit }
             type="button"
             onClick={cancelEdit}
             disabled={isSubmitting}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className={`px-6 py-3 border rounded-lg transition-colors ${
+              darkMode 
+                ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
           >
             Annuler
           </button>
